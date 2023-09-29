@@ -13,9 +13,6 @@ on:
   # Schedule the job to everyday to refresh dynamic first page
   schedule:
     - cron: '0 0 * * *'
-
-jobs:
-
   rendering:
     name: Build and deploy
     runs-on: ubuntu-latest
@@ -45,8 +42,12 @@ jobs:
     - name: Deploy to GitHub Pages 🚀
       uses: JamesIves/github-pages-deploy-action@v4.3.0
       with:
-        branch: master
+        branch: build
         folder: dist/dev-ops
+    - name: Commit and Push new README.md to the repository
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
 
