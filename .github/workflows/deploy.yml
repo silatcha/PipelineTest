@@ -1,0 +1,53 @@
+name: DevOps Test
+
+
+on:
+  push:
+    branches:
+      - master
+      
+  pull_request:
+    branches:
+      - master
+
+  # Schedule the job to everyday to refresh dynamic first page
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+
+  rendering:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout from main
+    - name: Checkout current repository to Master branch
+      uses: actions/checkout@v3
+    # Setup Node version
+    - name: Setup NodeJs 16.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+    # Cache the node_module to avoid build explosion
+    - name: Cache dependencies and build outputs to improve workflow execution time.
+      uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-js-${{ hashFiles('package-lock.json') }}
+    # Install dependencies for dynamic rendering
+    - name: Install dependencies
+      run: npm install
+    
+    # Build project
+    - name: Build DevOps
+      run: npm run build
+    # Build project
+    - name: Deploy to GitHub Pages 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.3.0
+      with:
+        branch: master
+        folder: dist/dev-ops
+
+
+
+ 
